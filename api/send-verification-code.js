@@ -1,6 +1,9 @@
 // api/send-verification-code.js
 const { Resend } = require('resend');
 
+// API Key do Resend
+const RESEND_API_KEY = 're_bCATYiyd_DWryNGWSy1Rpk44uWEXbX6A4';
+
 // Cache de códigos
 const codes = new Map();
 
@@ -36,7 +39,7 @@ module.exports = async (req, res) => {
         }
 
         // Inicializar Resend
-        const resend = new Resend(process.env.RESEND_API_KEY);
+        const resend = new Resend(RESEND_API_KEY);
 
         // Gerar código
         const code = generateCode();
