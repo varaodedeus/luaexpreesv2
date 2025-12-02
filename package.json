@@ -1,0 +1,22 @@
+{
+  "name": "key-system-dashboard",
+  "version": "1.0.0",
+  "description": "Sistema de gerenciamento de chaves com painéis múltiplos",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vercel dev"
+  },
+  "keywords": [
+    "key-system",
+    "dashboard",
+    "roblox"
+  ],
+  "author": "Seu Nome",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.3.0",
+    "nodemailer": "^6.9.7"
+  }
+}
