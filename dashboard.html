@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Key System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f5f7fa;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 260px;
+            height: 100vh;
+            background: white;
+            border-right: 1px solid #e5e7eb;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 24px 20px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 20px;
+            font-weight: 800;
+            color: #1f2937;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 0;
+        }
+
+        .nav-section {
+            margin-bottom: 24px;
+        }
+
+        .nav-title {
+            padding: 0 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            color: #6b7280;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .nav-item:hover {
+            background: #f9fafb;
+            color: #374151;
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            color: #667eea;
+            font-weight: 600;
+            border-right: 3px solid #667eea;
+        }
+
+        .nav-item svg {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        .sidebar-footer {
+            padding: 20px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #f9fafb;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .user-info:hover {
+            background: #f3f4f6;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+        }
+
+        .user-details {
+            flex: 1;
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .user-email {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            min-height: 100vh;
+            padding: 24px;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            padding: 20px 24px;
+            border-radius: 16px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .stat-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .stat-icon.purple {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            color: #667eea;
+        }
+
+        .stat-icon.green {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+
+        .stat-icon.blue {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+        }
+
+        .stat-icon.red {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
+        .stat-details {
+            flex: 1;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .stat-change {
+            font-size: 12px;
+            color: #10b981;
+            margin-top: 4px;
+        }
+
+        /* Panels Grid */
+        .panels-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .panel-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .panel-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            border-color: #667eea;
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .panel-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+
+        .panel-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .panel-description {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        .panel-stats {
+            display: flex;
+            gap: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .panel-stat {
+            flex: 1;
+        }
+
+        .panel-stat-label {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-bottom: 4px;
+        }
+
+        .panel-stat-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        /* Table */
+        .table-container {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .table-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            padding: 10px 16px 10px 40px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s ease;
+            width: 300px;
+        }
+
+        .search-box input:focus {
+            border-color: #667eea;
+        }
+
+        .search-box svg {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #f9fafb;
+        }
+
+        th {
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #f3f4f6;
+            font-size: 14px;
+            color: #374151;
+        }
+
+        tr:hover {
+            background: #f9fafb;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge.success {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+
+        .badge.danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
+        .badge.warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-icon.edit {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+        }
+
+        .btn-icon.edit:hover {
+            background: rgba(59, 130, 246, 0.2);
+        }
+
+        .btn-icon.delete {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
+        .btn-icon.delete:hover {
+            background: rgba(239, 68, 68, 0.2);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f3f4f6;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background: #e5e7eb;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            border-color: #667eea;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        /* Loading */
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .panels-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <div class="logo-icon">🔐</div>
+                <span>Key System</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <div class="nav-title">Principal</div>
+                <a class="nav-item active" data-page="dashboard">
+                    <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M2.5 7.5L10 2.5L17.5 7.5V16.25C17.5 16.5815 17.3683 16.8995 17.1339 17.1339C16.8995 17.3683 16.5815 17.5 16.25 17.5H3.75C3.41848 17.5 3.10054 17.3683 2.86612 17.1339C2.6317 16.8995 2.5 16.5815 2.5 16.25V7.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>Dashboard</span>
+                </a>
+                <a class="nav-item" data-page="panels">
+                    <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M2.5 3.33333H8.33333V8.33333H2.5V3.33333Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M11.6667 3.33333H17.5V8.33333H11.6667V3.33333Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M11.6667 11.6667H17.5V16.6667H11.6667V11.6667Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2.5 11.6667H8.33333V16.6667H2.5V11.6667Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>Painéis</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Painéis</div>
+                <a class="nav-item" data-page="panel-auto-farm">
+                    <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M10 18C14.4183 18 18 14.4183 18 10C18 5.58172 14.4183 2 10 2C5.58172 2 2 5.58172 2 10C2 14.4183 5.58172 18 10 18Z" stroke="currentColor" stroke-width="2"/>
+                        <path d="M10 6V10L13 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    <span>Auto Farm</span>
+                </a>
+                <a class="nav-item" data-page="panel-uber">
+                    <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 10H17M3 5H17M3 15H17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    <span>Uber</span>
+                </a>
+                <a class="nav-item" data-page="panel-esp">
+                    <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M1.66667 10C1.66667 10 4.16667 4.16667 10 4.16667C15.8333 4.16667 18.3333 10 18.3333 10C18.3333 10 15.8333 15.8333 10 15.8333C4.16667 15.8333 1.66667 10 1.66667 10Z" stroke="currentColor" stroke-width="2"/>
+                        <path d="M10 12.5C11.3807 12.5 12.5 11.3807 12.5 10C12.5 8.61929 11.3807 7.5 10 7.5C8.61929 7.5 7.5 8.61929 7.5 10C7.5 11.3807 8.61929 12.5 10 12.5Z" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                    <span>ESP</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Configurações</div>
+                <a class="nav-item" data-page="settings">
+                    <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M10 12.5C11.3807 12.5 12.5 11.3807 12.5 10C12.5 8.61929 11.3807 7.5 10 7.5C8.61929 7.5 7.5 8.61929 7.5 10C7.5 11.3807 8.61929 12.5 10 12.5Z" stroke="currentColor" stroke-width="2"/>
+                        <path d="M16.1667 12.5C16.0557 12.7513 16.0227 13.0302 16.0717 13.3001C16.1207 13.57 16.2495 13.8189 16.4417 14.0167L16.4917 14.0667C16.6466 14.2215 16.7694 14.4056 16.8531 14.6083C16.9368 14.8111 16.9798 15.0284 16.9798 15.2479C16.9798 15.4674 16.9368 15.6847 16.8531 15.8875C16.7694 16.0902 16.6466 16.2743 16.4917 16.4292C16.3368 16.584 16.1527 16.7069 15.95 16.7906C15.7472 16.8743 15.5299 16.9173 15.3104 16.9173C15.0909 16.9173 14.8736 16.8743 14.6709 16.7906C14.4681 16.7069 14.284 16.584 14.1292 16.4292L14.0792 16.3792C13.8814 16.187 13.6325 16.0581 13.3626 16.0091C13.0927 15.9601 12.8138 15.9932 12.5625 16.1042C12.3159 16.2105 12.1062 16.387 11.9594 16.6117C11.8126 16.8365 11.7349 17.0997 11.7358 17.3683V17.5C11.7358 17.942 11.5602 18.3659 11.2476 18.6785C10.935 18.9911 10.5111 19.1667 10.0691 19.1667C9.62714 19.1667 9.20325 18.9911 8.89069 18.6785C8.57813 18.3659 8.40253 17.942 8.40253 17.5V17.425C8.39798 17.1481 8.31274 16.878 8.15641 16.6487C8.00008 16.4194 7.77937 16.2408 7.52253 16.1342C7.27124 16.0232 6.99236 15.9901 6.72244 16.0391C6.45252 16.0881 6.2036 16.217 6.00586 16.4092L5.95586 16.4592C5.80099 16.614 5.61693 16.7369 5.4142 16.8206C5.21146 16.9043 4.99415 16.9473 4.77464 16.9473C4.55512 16.9473 4.33781 16.9043 4.13508 16.8206C3.93234 16.7369 3.74828 16.614 3.59341 16.4592C3.43855 16.3043 3.31572 16.1202 3.23201 15.9175C3.1483 15.7147 3.10529 15.4974 3.10529 15.2779C3.10529 15.0584 3.1483 14.8411 3.23201 14.6384C3.31572 14.4356 3.43855 14.2515 3.59341 14.0967L3.64341 14.0467C3.83565 13.8489 3.96451 13.6 4.01351 13.3301C4.06251 13.0602 4.02942 12.7813 3.91836 12.53C3.81209 12.2835 3.63556 12.0738 3.41081 11.927C3.18606 11.7802 2.92288 11.7024 2.65419 11.7033H2.50253C2.06056 11.7033 1.63667 11.5277 1.32411 11.2152C1.01154 10.9026 0.835938 10.4787 0.835938 10.0367C0.835938 9.59474 1.01154 9.17084 1.32411 8.85828C1.63667 8.54572 2.06056 8.37012 2.50253 8.37012H2.57753C2.85443 8.36557 3.12456 8.28033 3.35386 8.124C3.58317 7.96767 3.76177 7.74696 3.86836 7.49012C3.97942 7.23883 4.01251 6.95995 3.96351 6.69003C3.91451 6.42011 3.78565 6.17119 3.59341 5.97346L3.54341 5.92346C3.38855 5.76859 3.26572 5.58453 3.18201 5.38179C3.0983 5.17906 3.05529 4.96175 3.05529 4.74223C3.05529 4.52272 3.0983 4.30541 3.18201 4.10267C3.26572 3.89994 3.38855 3.71588 3.54341 3.56101C3.69828 3.40615 3.88234 3.28332 4.08508 3.19961C4.28781 3.1159 4.50512 3.07289 4.72464 3.07289C4.94415 3.07289 5.16146 3.1159 5.3642 3.19961C5.56693 3.28332 5.75099 3.40615 5.90586 3.56101L5.95586 3.61101C6.1536 3.80325 6.40252 3.93211 6.67244 3.98111C6.94236 4.03011 7.22124 3.99702 7.47253 3.88596H7.52253C7.76902 3.77969 7.97877 3.60316 8.12557 3.37841C8.27237 3.15366 8.35011 2.89048 8.34919 2.62179V2.47012C8.34919 2.02816 8.52479 1.60426 8.83735 1.2917C9.14991 0.979144 9.57381 0.803543 10.0158 0.803543C10.4578 0.803543 10.8817 0.979144 11.1942 1.2917C11.5068 1.60426 11.6824 2.02816 11.6824 2.47012V2.54512C11.6815 2.81381 11.7592 3.07699 11.906 3.30174C12.0528 3.52649 12.2626 3.70302 12.5091 3.80929C12.7604 3.92035 13.0393 3.95344 13.3092 3.90444C13.5791 3.85544 13.828 3.72658 14.0258 3.53434L14.0758 3.48434C14.2307 3.32948 14.4147 3.20665 14.6175 3.12294C14.8202 3.03923 15.0375 2.99622 15.257 2.99622C15.4766 2.99622 15.6939 3.03923 15.8966 3.12294C16.0993 3.20665 16.2834 3.32948 16.4383 3.48434C16.5931 3.63921 16.716 3.82327 16.7997 4.02601C16.8834 4.22874 16.9264 4.44605 16.9264 4.66557C16.9264 4.88508 16.8834 5.10239 16.7997 5.30513C16.716 5.50786 16.5931 5.69192 16.4383 5.84679L16.3883 5.89679C16.196 6.09453 16.0672 6.34345 16.0182 6.61337C15.9692 6.88329 16.0023 7.16217 16.1133 7.41346V7.46346C16.2196 7.70995 16.3961 7.9197 16.6209 8.0665C16.8456 8.2133 17.1088 8.29104 17.3775 8.29012H17.5292C17.9711 8.29012 18.395 8.46572 18.7076 8.77828C19.0201 9.09084 19.1957 9.51473 19.1957 9.9567C19.1957 10.3987 19.0201 10.8226 18.7076 11.1351C18.395 11.4477 17.9711 11.6233 17.5292 11.6233H17.4542C17.1855 11.6224 16.9223 11.7001 16.6976 11.8469C16.4728 11.9937 16.2963 12.2035 16.19 12.45V12.5Z" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                    <span>Configurações</span>
+                </a>
+            </div>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="user-info" onclick="logout()">
+                <div class="user-avatar" id="userAvatar">U</div>
+                <div class="user-details">
+                    <div class="user-name" id="userName">Usuário</div>
+                    <div class="user-email" id="userEmail">user@email.com</div>
+                </div>
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7 16L2 10L7 4M3 10H18" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Dashboard Section -->
+        <div class="content-section active" id="dashboard-section">
+            <div class="header">
+                <h1 class="header-title">Dashboard</h1>
+                <div class="header-actions">
+                    <button class="btn btn-secondary">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M17.5 8.33333V10C17.4991 11.7983 16.9754 13.5552 16 15.0434C15.0247 16.5316 13.6378 17.6826 12.0182 18.3447C10.3986 19.0068 8.62056 19.1494 6.91403 18.7553C5.20749 18.3613 3.65041 17.4471 2.44939 16.1317C1.24837 14.8163 0.460977 13.1586 0.195506 11.3798C-0.0699645 9.60092 0.198722 7.78172 1.00312 6.16786C1.80752 4.55401 3.09963 3.21883 4.70154 2.33785C6.30345 1.45686 8.13985 1.0697 10 1.16667V5M17.5 3.33333L10 10.8333L8.33333 9.16667" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Atualizar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon purple">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <div class="stat-details">
+                        <div class="stat-label">Total de Chaves</div>
+                        <div class="stat-value" id="totalKeys">0</div>
+                        <div class="stat-change">+12% este mês</div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon green">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21M16 7C16 9.20914 14.2091 11 12 11C9.79086 11 8 9.20914 8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <div class="stat-details">
+                        <div class="stat-label">Chaves Ativas</div>
+                        <div class="stat-value" id="activeKeys">0</div>
+                        <div class="stat-change">+8% este mês</div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon blue">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M22 12H18L15 21L9 3L6 12H2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <div class="stat-details">
+                        <div class="stat-label">Painéis Ativos</div>
+                        <div class="stat-value">3</div>
+                        <div class="stat-change">Auto Farm, Uber, ESP</div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon red">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M12 8V12L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <div class="stat-details">
+                        <div class="stat-label">Expirando em Breve</div>
+                        <div class="stat-value" id="expiringKeys">0</div>
+                        <div class="stat-change">Próximos 7 dias</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Keys Table -->
+            <div class="table-container">
+                <div class="table-header">
+                    <h3 class="table-title">Chaves Recentes</h3>
+                    <div class="search-box">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9.16667 15.8333C12.8486 15.8333 15.8333 12.8486 15.8333 9.16667C15.8333 5.48477 12.8486 2.5 9.16667 2.5C5.48477 2.5 2.5 5.48477 2.5 9.16667C2.5 12.8486 5.48477 15.8333 9.16667 15.8333Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M17.5 17.5L13.875 13.875" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <input type="text" placeholder="Buscar chave..." id="searchKey">
+                    </div>
+                </div>
+
+                <table id="keysTable">
+                    <thead>
+                        <tr>
+                            <th>Chave</th>
+                            <th>Painel</th>
+                            <th>Status</th>
+                            <th>Criado em</th>
+                            <th>Expira em</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="keysTableBody">
+                        <tr>
+                            <td colspan="6" style="text-align: center; padding: 40px; color: #9ca3af;">
+                                Carregando...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Panels Section -->
+        <div class="content-section" id="panels-section">
+            <div class="header">
+                <h1 class="header-title">Meus Painéis</h1>
+            </div>
+
+            <div class="panels-grid">
+                <!-- Auto Farm Panel -->
+                <div class="panel-card" onclick="goToPanel('panel-auto-farm')">
+                    <div class="panel-header">
+                        <div class="panel-icon">🌾</div>
+                        <div class="panel-title">Auto Farm</div>
+                    </div>
+                    <p class="panel-description">
+                        Sistema automatizado de farm para coletar recursos e XP no jogo.
+                    </p>
+                    <div class="panel-stats">
+                        <div class="panel-stat">
+                            <div class="panel-stat-label">Chaves</div>
+                            <div class="panel-stat-value" id="autoFarmKeys">0</div>
+                        </div>
+                        <div class="panel-stat">
+                            <div class="panel-stat-label">Ativas</div>
+                            <div class="panel-stat-value" id="autoFarmActive">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Uber Panel -->
+                <div class="panel-card" onclick="goToPanel('panel-uber')">
+                    <div class="panel-header">
+                        <div class="panel-icon">🚗</div>
+                        <div class="panel-title">Uber</div>
+                    </div>
+                    <p class="panel-description">
+                        Sistema de teleporte e movimentação rápida pelo mapa do jogo.
+                    </p>
+                    <div class="panel-stats">
+                        <div class="panel-stat">
+                            <div class="panel-stat-label">Chaves</div>
+                            <div class="panel-stat-value" id="uberKeys">0</div>
+                        </div>
+                        <div class="panel-stat">
+                            <div class="panel-stat-label">Ativas</div>
+                            <div class="panel-stat-value" id="uberActive">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ESP Panel -->
+                <div class="panel-card" onclick="goToPanel('panel-esp')">
+                    <div class="panel-header">
+                        <div class="panel-icon">👁️</div>
+                        <div class="panel-title">ESP</div>
+                    </div>
+                    <p class="panel-description">
+                        Sistema de visualização de jogadores e itens através de paredes.
+                    </p>
+                    <div class="panel-stats">
+                        <div class="panel-stat">
+                            <div class="panel-stat-label">Chaves</div>
+                            <div class="panel-stat-value" id="espKeys">0</div>
+                        </div>
+                        <div class="panel-stat">
+                            <div class="panel-stat-label">Ativas</div>
+                            <div class="panel-stat-value" id="espActive">0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Auto Farm Panel Detail -->
+        <div class="content-section" id="panel-auto-farm-section">
+            <div class="header">
+                <h1 class="header-title">🌾 Auto Farm</h1>
+                <div class="header-actions">
+                    <button class="btn btn-primary" onclick="openGenerateKeyModal('auto-farm')">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M10 4.16667V15.8333M4.16667 10H15.8333" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        Gerar Nova Chave
+                    </button>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <div class="table-header">
+                    <h3 class="table-title">Chaves do Painel Auto Farm</h3>
+                    <div class="search-box">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9.16667 15.8333C12.8486 15.8333 15.8333 12.8486 15.8333 9.16667C15.8333 5.48477 12.8486 2.5 9.16667 2.5C5.48477 2.5 2.5 5.48477 2.5 9.16667C2.5 12.8486 5.48477 15.8333 9.16667 15.8333Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M17.5 17.5L13.875 13.875" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <input type="text" placeholder="Buscar chave...">
+                    </div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Chave</th>
+                            <th>HWID</th>
+                            <th>Status</th>
+                            <th>Criado em</th>
+                            <th>Expira em</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="autoFarmKeysTable">
+                        <tr>
+                            <td colspan="6" style="text-align: center; padding: 40px; color: #9ca3af;">
+                                Nenhuma chave encontrada
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Uber Panel Detail -->
+        <div class="content-section" id="panel-uber-section">
+            <div class="header">
+                <h1 class="header-title">🚗 Uber</h1>
+                <div class="header-actions">
+                    <button class="btn btn-primary" onclick="openGenerateKeyModal('uber')">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M10 4.16667V15.8333M4.16667 10H15.8333" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        Gerar Nova Chave
+                    </button>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <div class="table-header">
+                    <h3 class="table-title">Chaves do Painel Uber</h3>
+                    <div class="search-box">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9.16667 15.8333C12.8486 15.8333 15.8333 12.8486 15.8333 9.16667C15.8333 5.48477 12.8486 2.5 9.16667 2.5C5.48477 2.5 2.5 5.48477 2.5 9.16667C2.5 12.8486 5.48477 15.8333 9.16667 15.8333Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M17.5 17.5L13.875 13.875" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <input type="text" placeholder="Buscar chave...">
+                    </div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Chave</th>
+                            <th>HWID</th>
+                            <th>Status</th>
+                            <th>Criado em</th>
+                            <th>Expira em</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="uberKeysTable">
+                        <tr>
+                            <td colspan="6" style="text-align: center; padding: 40px; color: #9ca3af;">
+                                Nenhuma chave encontrada
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ESP Panel Detail -->
+        <div class="content-section" id="panel-esp-section">
+            <div class="header">
+                <h1 class="header-title">👁️ ESP</h1>
+                <div class="header-actions">
+                    <button class="btn btn-primary" onclick="openGenerateKeyModal('esp')">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M10 4.16667V15.8333M4.16667 10H15.8333" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        Gerar Nova Chave
+                    </button>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <div class="table-header">
+                    <h3 class="table-title">Chaves do Painel ESP</h3>
+                    <div class="search-box">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9.16667 15.8333C12.8486 15.8333 15.8333 12.8486 15.8333 9.16667C15.8333 5.48477 12.8486 2.5 9.16667 2.5C5.48477 2.5 2.5 5.48477 2.5 9.16667C2.5 12.8486 5.48477 15.8333 9.16667 15.8333Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M17.5 17.5L13.875 13.875" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <input type="text" placeholder="Buscar chave...">
+                    </div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Chave</th>
+                            <th>HWID</th>
+                            <th>Status</th>
+                            <th>Criado em</th>
+                            <th>Expira em</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="espKeysTable">
+                        <tr>
+                            <td colspan="6" style="text-align: center; padding: 40px; color: #9ca3af;">
+                                Nenhuma chave encontrada
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Settings Section -->
+        <div class="content-section" id="settings-section">
+            <div class="header">
+                <h1 class="header-title">Configurações</h1>
+            </div>
+
+            <div class="table-container">
+                <h3 class="table-title" style="margin-bottom: 20px;">Configurações da Conta</h3>
+                
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" id="settingsEmail" disabled>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Nova Senha</label>
+                    <input type="password" class="form-input" placeholder="Deixe em branco para não alterar">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Confirmar Nova Senha</label>
+                    <input type="password" class="form-input" placeholder="Confirme a nova senha">
+                </div>
+
+                <button class="btn btn-primary">
+                    Salvar Alterações
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Generate Key -->
+    <div class="modal" id="generateKeyModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Gerar Nova Chave</h3>
+                <button class="modal-close" onclick="closeGenerateKeyModal()">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </button>
+            </div>
+
+            <form id="generateKeyForm">
+                <input type="hidden" id="modalPanel" name="panel">
+
+                <div class="form-group">
+                    <label class="form-label">Nome do Usuário (opcional)</label>
+                    <input type="text" class="form-input" id="keyOwner" placeholder="Ex: João Silva">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Duração (dias)</label>
+                        <select class="form-select" id="keyDuration">
+                            <option value="1">1 dia</option>
+                            <option value="7">7 dias</option>
+                            <option value="30" selected>30 dias</option>
+                            <option value="90">90 dias</option>
+                            <option value="365">1 ano</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Limite de Usos</label>
+                        <select class="form-select" id="keyMaxUses">
+                            <option value="-1" selected>Ilimitado</option>
+                            <option value="1">1 uso</option>
+                            <option value="5">5 usos</option>
+                            <option value="10">10 usos</option>
+                            <option value="50">50 usos</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    Gerar Chave
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = '/api';
+        let currentUser = null;
+        let currentPanel = null;
+
+        // Check auth on load
+        window.addEventListener('load', async () => {
+            const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+            
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/verify-token`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.valid) {
+                    currentUser = data.user;
+                    loadUserInfo();
+                    loadDashboard();
+                } else {
+                    localStorage.removeItem('token');
+                    sessionStorage.removeItem('token');
+                    window.location.href = 'login.html';
+                }
+            } catch (error) {
+                console.error('Erro ao verificar token:', error);
+                window.location.href = 'login.html';
+            }
+        });
+
+        // Load user info
+        function loadUserInfo() {
+            const email = currentUser.email;
+            const initial = email.charAt(0).toUpperCase();
+            
+            document.getElementById('userAvatar').textContent = initial;
+            document.getElementById('userName').textContent = email.split('@')[0];
+            document.getElementById('userEmail').textContent = email;
+            document.getElementById('settingsEmail').value = email;
+        }
+
+        // Load dashboard data
+        async function loadDashboard() {
+            // TODO: Carregar estatísticas reais do banco
+            document.getElementById('totalKeys').textContent = '0';
+            document.getElementById('activeKeys').textContent = '0';
+            document.getElementById('expiringKeys').textContent = '0';
+        }
+
+        // Navigation
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Update active nav
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Show section
+                const page = this.getAttribute('data-page');
+                showSection(page);
+            });
+        });
+
+        function showSection(page) {
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            document.getElementById(page + '-section').classList.add('active');
+        }
+
+        function goToPanel(panelId) {
+            // Update nav
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            document.querySelector(`[data-page="${panelId}"]`).classList.add('active');
+            
+            // Show section
+            showSection(panelId);
+        }
+
+        // Generate Key Modal
+        function openGenerateKeyModal(panel) {
+            currentPanel = panel;
+            document.getElementById('modalPanel').value = panel;
+            document.getElementById('generateKeyModal').classList.add('active');
+        }
+
+        function closeGenerateKeyModal() {
+            document.getElementById('generateKeyModal').classList.remove('active');
+            document.getElementById('generateKeyForm').reset();
+        }
+
+        // Generate Key Form
+        document.getElementById('generateKeyForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const panel = document.getElementById('modalPanel').value;
+            const owner = document.getElementById('keyOwner').value || 'Anonymous';
+            const duration = parseInt(document.getElementById('keyDuration').value);
+            const maxUses = parseInt(document.getElementById('keyMaxUses').value);
+
+            const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+
+            try {
+                const response = await fetch(`${API_URL}/generate-key`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        panel,
+                        owner,
+                        duration,
+                        maxUses
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert(`Chave gerada com sucesso!\n\n${data.key}\n\nA chave foi adicionada à lista.`);
+                    closeGenerateKeyModal();
+                    loadDashboard(); // Reload data
+                } else {
+                    alert('Erro ao gerar chave: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao gerar chave. Tente novamente.');
+            }
+        });
+
+        // Logout
+        function logout() {
+            if (confirm('Deseja sair da sua conta?')) {
+                localStorage.removeItem('token');
+                sessionStorage.removeItem('token');
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Close modal on outside click
+        document.getElementById('generateKeyModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeGenerateKeyModal();
+            }
+        });
+    </script>
+</body>
+</html>
