@@ -3,9 +3,9 @@ const { MongoClient } = require('mongodb');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-// Sua connection string do MongoDB
-const MONGODB_URI = 'mongodb+srv://swelokumesd81_db_user:<db_password>@cluster0.sxwnhrt.mongodb.net/?appName=Cluster0';
-const JWT_SECRET = process.env.JWT_SECRET || 'seu-secret-key-aqui-mude-isso';
+// Connection string com senha
+const MONGODB_URI = 'mongodb+srv://swelokumesd81_db_user:Sempre00.@cluster0.sxwnhrt.mongodb.net/?appName=Cluster0';
+const JWT_SECRET = 'minha-chave-super-secreta-12345-key-system';
 
 let cachedClient = null;
 
