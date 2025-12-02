@@ -1,7 +1,7 @@
 // api/verify-token.js
 const jwt = require('jsonwebtoken');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'seu-secret-key-aqui-mude-isso';
+const JWT_SECRET = 'minha-chave-super-secreta-12345-key-system';
 
 module.exports = async (req, res) => {
     // CORS
