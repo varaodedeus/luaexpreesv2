@@ -1,7 +1,7 @@
 // api/send-verification-code.js
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 
-// Cache de códigos (em produção use Redis ou MongoDB)
+// Cache de códigos
 const codes = new Map();
 
 // Gerar código de 6 dígitos
@@ -35,6 +35,9 @@ module.exports = async (req, res) => {
             });
         }
 
+        // Inicializar Resend
+        const resend = new Resend(process.env.RESEND_API_KEY);
+
         // Gerar código
         const code = generateCode();
         
@@ -44,17 +47,12 @@ module.exports = async (req, res) => {
             expires: Date.now() + 10 * 60 * 1000
         });
 
-        // Configurar transporter de email
-        const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS
-            }
-        });
-
-        // HTML do email
-        const emailHTML = `
+        // Enviar email
+        await resend.emails.send({
+            from: 'Key System <onboarding@resend.dev>',
+            to: email,
+            subject: '🔐 Seu Código de Verificação',
+            html: `
 <!DOCTYPE html>
 <html>
 <head>
@@ -104,14 +102,7 @@ module.exports = async (req, res) => {
     </div>
 </body>
 </html>
-        `;
-
-        // Enviar email
-        await transporter.sendMail({
-            from: `"Key System" <${process.env.EMAIL_USER}>`,
-            to: email,
-            subject: '🔐 Seu Código de Verificação',
-            html: emailHTML
+            `
         });
 
         console.log(`✅ Código enviado para ${email}: ${code}`);
