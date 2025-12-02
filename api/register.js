@@ -2,8 +2,8 @@
 const { MongoClient } = require('mongodb');
 const bcrypt = require('bcryptjs');
 
-// Sua connection string do MongoDB
-const MONGODB_URI = 'mongodb+srv://swelokumesd81_db_user:<db_password>@cluster0.sxwnhrt.mongodb.net/?appName=Cluster0';
+// Connection string com senha
+const MONGODB_URI = 'mongodb+srv://swelokumesd81_db_user:Sempre00.@cluster0.sxwnhrt.mongodb.net/?appName=Cluster0';
 
 let cachedClient = null;
 
@@ -89,7 +89,7 @@ module.exports = async (req, res) => {
             email: email.toLowerCase(),
             password: hashedPassword,
             createdAt: new Date(),
-            panels: [], // Painéis que o usuário tem acesso
+            panels: [],
             isAdmin: false
         };
 
