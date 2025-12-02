@@ -4,7 +4,8 @@
   "description": "Sistema de gerenciamento de chaves com painéis múltiplos",
   "main": "index.js",
   "scripts": {
-    "dev": "vercel dev"
+    "dev": "vercel dev",
+    "build": "echo 'No build needed'"
   },
   "keywords": [
     "key-system",
